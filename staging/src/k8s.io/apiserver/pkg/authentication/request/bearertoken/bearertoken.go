@@ -18,6 +18,7 @@ package bearertoken
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -57,6 +58,18 @@ func (a *Authenticator) AuthenticateRequest(req *http.Request) (user.Info, bool,
 	// If the token authenticator didn't error, provide a default error
 	if !ok && err == nil {
 		err = invalidToken
+	}
+
+	if err == nil && user != nil {
+		fmt.Printf("successful auth!\n")
+			fmt.Printf("  username: %v\n", user.GetName())
+			fmt.Printf("  uid: %v\n", user.GetUID())
+		if user.GetGroups() != nil {
+			fmt.Printf("  groups: %v\n", user.GetGroups())
+		}
+		if user.GetExtra() != nil {
+			fmt.Printf("  extra: %v\n", user.GetExtra())
+		}
 	}
 
 	return user, ok, err

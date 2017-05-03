@@ -17,6 +17,7 @@ limitations under the License.
 package authenticator
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/go-openapi/spec"
@@ -255,6 +256,7 @@ func newAuthenticatorFromOIDCIssuerURL(issuerURL, clientID, caFile, usernameClai
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("usernameClaim: %s, groupsClaim: %s\n", usernameClaim, groupsClaim)
 
 	return bearertoken.New(tokenAuthenticator), nil
 }

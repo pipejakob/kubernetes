@@ -209,6 +209,7 @@ func (a *OIDCAuthenticator) client() (*oidc.Client, error) {
 // AuthenticateToken decodes and verifies an ID Token using the OIDC client, if the verification succeeds,
 // then it will extract the user info from the JWT claims.
 func (a *OIDCAuthenticator) AuthenticateToken(value string) (user.Info, bool, error) {
+	fmt.Printf("XXX AuthenticateToken!\n")
 	jwt, err := jose.ParseJWT(value)
 	if err != nil {
 		return nil, false, err
@@ -265,7 +266,9 @@ func (a *OIDCAuthenticator) AuthenticateToken(value string) (user.Info, bool, er
 	info := &user.DefaultInfo{Name: username}
 
 	if a.groupsClaim != "" {
+		fmt.Printf("looking up groupsClaim: %v\n", a.groupsClaim)
 		groups, found, err := claims.StringsClaim(a.groupsClaim)
+		fmt.Printf(" -> got groups: %v, %v, %v\n", groups, found, err)
 		if err != nil {
 			// Groups type is present but is not an array of strings, try to decode as a string.
 			group, _, err := claims.StringClaim(a.groupsClaim)
@@ -277,6 +280,8 @@ func (a *OIDCAuthenticator) AuthenticateToken(value string) (user.Info, bool, er
 		} else if found {
 			info.Groups = groups
 		}
+	} else {
+		fmt.Printf("group claims is empty!\n")
 	}
 	return info, true, nil
 }
